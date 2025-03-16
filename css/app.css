@@ -41,6 +41,11 @@ header .button {
     transition: 0.25s all;
 }
 
+header .button svg {
+    position: relative;
+    top: 0.375rem;
+}
+
 header .button:hover svg {
     transform: rotate(360deg);
     transition: 0.25s all;
@@ -65,13 +70,17 @@ input:last-of-type {
     width: auto;
 }
 
-@keyframes width {
-    from {
-    }
-
+@keyframes backdrop-gray {
     to {
         backdrop-filter: blur(0.5rem);
         background: rgba(from gray r g b / 0.25);
+    }
+}
+
+@keyframes backdrop-black {
+    to {
+        backdrop-filter: blur(0.5rem);
+        background: rgba(from black r g b / 0.75);
     }
 }
 
@@ -88,7 +97,7 @@ header:has(.modal) {
     flex-direction: column;
     height: 100%;
     width: 100%;
-    animation: 1s forwards width;
+    animation: 1s forwards backdrop-gray;
 }
 
 .modal > * {
@@ -100,6 +109,32 @@ header:has(.modal) {
     direction: rtl;
     padding: 1rem;
     padding-right: 0;
+    margin-top: 1rem;
+    border-radius: 5px;
+}
+
+select {
+    background: black;
+    color: white;
+    inset: 0;
+    border: 0;
+    padding: 0.25rem 0.475rem;
+    border-radius: 5px;
+}
+
+.modal.help {
+    animation: 1s forwards backdrop-black;
+    transition: 0.25s all;
+}
+
+.modal.help * {
+    max-width: 550px;
+    color: white;
+    fill: white;
+}
+
+.modal.help ul {
+    margin-top: 1rem;
 }
 
 .modal pre {
@@ -180,6 +215,33 @@ header:has(.modal) {
     height: 2rem;
     position: relative;
     display: inline-block;
+}
+
+.logo {
+    display: inline;
+    padding: 0.5rem;
+    margin-left: 1rem;
+    border: 1px solid black;
+    border-radius: 10rem;
+    color: white;
+    fill: white;
+    box-shadow: 0.175rem 0.175rem 0.375rem rgba(from black r g b /0.25);
+    background:
+        linear-gradient(217deg, rgba(255, 0, 0, 0.8), rgba(255, 0, 0, 0) 70.71%),
+        linear-gradient(127deg, rgba(0, 255, 0, 0.8), rgba(0, 255, 0, 0) 70.71%),
+        linear-gradient(336deg, rgba(0, 0, 255, 0.8), rgba(0, 0, 255, 0) 70.71%);
+
+    transition: 0.25s all;
+}
+
+.logo:hover {
+    box-shadow: 0rem 0rem 0.375rem rgba(from black r g b /0.5);
+    transition: 0.25s all;
+}
+
+.logo svg {
+    position: relative;
+    top: 0.375rem;
 }
 
 pre code.attr {
