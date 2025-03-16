@@ -84,17 +84,22 @@ header:has(.modal) {
 }
 
 .modal {
+    display: flex;
+    flex-direction: column;
     height: 100%;
     width: 100%;
-    padding: 10rem;
     animation: 1s forwards width;
+}
+
+.modal > * {
+    width: 80%;
+    margin: 0 auto;
 }
 
 .modal p:first-of-type {
     direction: rtl;
     padding: 1rem;
     padding-right: 0;
-    margin: 0;
 }
 
 .modal pre {
