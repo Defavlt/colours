@@ -250,7 +250,7 @@ const render = ({colours, style, save, help, gradient_style}) =>
         header([
             !help && !save &&
             aside([
-                a({href:"/", class: "logo"}, [palettemark()]),
+                a({href:"", class: "logo"}, [palettemark()]),
                 button({onclick:onhelp}, [helpmark()]),
                 button({onclick:onsave}, [savemark()]),
                 button({onclick:onswap}, [swapmark()]),
