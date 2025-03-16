@@ -1,0 +1,186 @@
+:root {
+    --color-bg-primary: #C46564;
+    --color-bg-secondary: #FAF7C8;
+    --color-text-primary: #9B726F;
+    --color-text-secondary: #F0E999;
+    --color-highlight-primary: red;
+}
+
+html * {
+    box-sizing: border-box;
+}
+
+html,
+body,
+main {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+body,
+main,
+header {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    position: absolute;
+    padding: 2rem 1rem;
+    width: 50%;
+    left: 50%;
+    direction: rtl;
+}
+
+main {
+    display: grid;
+}
+
+header .button {
+    fill: black !important;
+    transition: 0.25s all;
+}
+
+header .button:hover svg {
+    transform: rotate(360deg);
+    transition: 0.25s all;
+}
+
+svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+input {
+    background: transparent;
+    outline: none;
+    inset: 0;
+    border: none;
+    font-size: 1rem;
+    width: 5rem;
+    color: inherit;
+}
+
+input:last-of-type {
+    width: auto;
+}
+
+@keyframes width {
+    from {
+    }
+
+    to {
+        backdrop-filter: blur(0.5rem);
+        background: rgba(from gray r g b / 0.25);
+    }
+}
+
+header:has(.modal) {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    left: 0;
+    direction: ltr;
+}
+
+.modal {
+    height: 100%;
+    width: 100%;
+    padding: 10rem;
+    animation: 1s forwards width;
+}
+
+.modal p:first-of-type {
+    direction: rtl;
+    padding: 1rem;
+    padding-right: 0;
+    margin: 0;
+}
+
+.modal pre {
+    border: 1px solid black;
+    padding: 1rem;
+    border-radius: 5px;
+    background: rgba(from black r g b / 0.75);
+    color: white;
+}
+
+.colour {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.button {
+    padding: 0.5rem;
+    text-decoration: none;
+    border: 0.1rem solid gray;
+    border-radius: 5px;
+    color: black;
+    background: gray;
+}
+
+.button:has(svg) {
+    background: transparent;
+    fill: transparent;
+    border: none;
+    transition: 0.25s all;
+}
+
+.button:hover {
+    /*70.71%
+     * 217deg
+     * 127deg
+     * 336deg
+    background:
+        linear-gradient(217deg, rgba(255, 0, 0, 0.8), rgba(255, 0, 0, 0) 70.71%),
+        linear-gradient(127deg, rgba(0, 255, 0, 0.8), rgba(0, 255, 0, 0) 70.71%),
+        linear-gradient(336deg, rgba(0, 0, 255, 0.8), rgba(0, 0, 255, 0) 70.71%);*/
+}
+
+.colour:hover .button:has(svg) {
+    fill: black;
+}
+
+.colour .button:has(svg):hover {
+    transform: rotate(90deg);
+}
+
+.colour:hover p {
+    color: black;
+}
+
+.colour p {
+    margin-left: 1rem;
+    color: rgba(from black r g b / 0.25);
+    transition: 0.25s all;
+}
+
+.colour p:last-of-type {
+    margin-top: auto;
+    margin-left: 1rem;
+}
+
+.colour p input {
+    margin-left: 1rem;
+}
+
+.colour .button {
+    padding: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+.colour .button:has(svg) {
+    padding: 0.5rem 0.5rem 2rem;
+    height: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+pre code.attr {
+    color: lightblue;
+}
+
+pre code.value {
+    color: orange;
+}
