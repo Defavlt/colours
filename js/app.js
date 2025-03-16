@@ -1,9 +1,10 @@
 import {h, app, text} from "./hyperapp.js";
 import {
-    body, main, header, footer, article, section, aside,
+    body, main, header, footer, article, section, aside, div,
     table, thead, tbody, tfoot, tr, th, td, 
     ul, li, nav, form, input, label,
-    h1, h2, p, a, span, img, canvas, code, pre, svg, path, br
+    h1, h2, p, a, span, img, canvas, code, pre, svg, path, br,
+    select, option
 } from "./hyperapp.html.js";
 
 const node = document.querySelector("body");
@@ -31,6 +32,16 @@ const swapmark = () =>
         })
     ]);
 
+const palettemark = () =>
+    svg({xmlns:"http://www.w3.org/2000/svg", width:"32", height:"32", viewBox:"0 0 256 256"}, [
+        path({d:"M200.77,53.89A103.27,103.27,0,0,0,128,24h-1.07A104,104,0,0,0,24,128c0,43,26.58,79.06,69.36,94.17A32,32,0,0,0,136,192a16,16,0,0,1,16-16h46.21a31.81,31.81,0,0,0,31.2-24.88,104.43,104.43,0,0,0,2.59-24A103.28,103.28,0,0,0,200.77,53.89Zm13,93.71A15.89,15.89,0,0,1,198.21,160H152a32,32,0,0,0-32,32,16,16,0,0,1-21.31,15.07C62.49,194.3,40,164,40,128a88,88,0,0,1,87.09-88h.9a88.35,88.35,0,0,1,88,87.25A88.86,88.86,0,0,1,213.81,147.6ZM140,76a12,12,0,1,1-12-12A12,12,0,0,1,140,76ZM96,100A12,12,0,1,1,84,88,12,12,0,0,1,96,100Zm0,56a12,12,0,1,1-12-12A12,12,0,0,1,96,156Zm88-56a12,12,0,1,1-12-12A12,12,0,0,1,184,100Z"})
+    ]);
+
+const helpmark = () =>
+    svg({xmlns:"http://www.w3.org/2000/svg", width:"32", height:"32", fill:"#000000", viewBox:"0 0 256 256"}, [
+        path({d:"M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180ZM128,72c-22.06,0-40,16.15-40,36v4a8,8,0,0,0,16,0v-4c0-11,10.77-20,24-20s24,9,24,20-10.77,20-24,20a8,8,0,0,0-8,8v8a8,8,0,0,0,16,0v-.72c18.24-3.35,32-17.9,32-35.28C168,88.15,150.06,72,128,72Zm104,56A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"})
+    ]);
+
 // Array operations
 const insert = (a, i, v) => [...a.slice(0, i), v, ...a.slice(i)];
 const remove = (a, i) => [...a.slice(0, i), ...a.slice(i + 1)];
@@ -49,13 +60,11 @@ const colour = (gen) =>
 // values
 const pc = (i, l) => `${100 * (i + 1) / l}%`;
 
-const gen_gradient = (angle, colours) => (
+const gen_gradient = (angle, type, colours) => (
     colours = colours
         .map(({name, colour}, i) => `${colour} ${pc(i, colours.length)}`)
         .join(","),
-    colours = `linear-gradient(${angle}deg, ${colours})`,
-    console.log(colours),
-    colours
+    `${type}-gradient(${colours})`
 );
 
 const nodefault = (callback) => (state, event) => {
@@ -105,6 +114,16 @@ const onswap = ({style, ...state}) => ({
     style: (1 + style) % styles.length
 });
 
+const onhelp = ({help, ...state}) => ({
+    ...state,
+    help: !help
+});
+
+const ongradientselect = ({gradient_style, ...state}, event) => ({
+    ...state,
+    gradient_style: event.target.value
+});
+
 const button = ({onclick, ...props}, children) => a({
     ...props,
     class: "button",
@@ -113,7 +132,7 @@ const button = ({onclick, ...props}, children) => a({
     onclick: nodefault(onclick),
 }, children);
 
-const palette = (colours) =>
+const palette = ({colours}) =>
     main([
         ...colours
             .map(
@@ -136,10 +155,26 @@ const palette = (colours) =>
             )
     ]);
 
-const gradient = (colours) =>
+const palette_out = ({colours, save}) => ([
+    p([
+        button({onclick:onsave}, [xmark()])
+    ]),
+    pre([
+        ...colours
+            .map(
+                ({name, colour}) =>
+                    param(`--colour-${name}`, colour)
+            )
+            .flat()
+    ])
+]);
+
+const palette_menu = () => [];
+
+const gradient = ({colours, gradient_style}) =>
     main({
         style: {
-            background: gen_gradient(180, colours)
+            background: gen_gradient(180, gradient_style, colours)
         }
     }, [
         ...colours
@@ -163,41 +198,87 @@ const gradient = (colours) =>
             )
     ]);
 
-const styles = [
-    palette,
-    gradient
+const gradient_out = ({colours, gradient_style, save}) => ([
+    p([
+        button({onclick:onsave}, [xmark()]),
+        ...gradient_menu({gradient_style})
+    ]),
+    pre([
+        ...colours
+            .map(({name, colour}) => param(`--colour-${name}`, gradient_style, colour))
+            .flat(),
+        br(),
+        text(`${gradient_style}-gradient(`),
+        ...colours
+            .map(({name, colour}) => [br(), text("\t"), ...get_attr(`--colour-${name}`), text(", ")])
+            .flat()
+            // Remove dangling ","
+            .slice(0, -1),
+        br(),
+        text(")")
+    ])
+]);
+
+const gradient_alternatives = () => [
+    "linear",
+    "radial",
+    "repeating-linear",
+    "conic-gradient"
 ];
 
-const attr = (v) => code({class: "attr"}, text(`${v}:`));
-const value = (v) => code({class: "value"}, text(`${v};`));
-const param = (k, v) => [attr(k), text(" "), value(v), br()];
+const gradient_menu = ({gradient_style}) => [
+    select({onchange:ongradientselect}, [
+        ...gradient_alternatives()
+            .map(
+                (v) => option({value: v, selected: gradient_style==v}, [text(v)])
+            )
+    ]),
+];
 
-const render = ({colours, style, save}) =>
+const styles = [
+    {markup: palette, output: palette_out, menu: palette_menu},
+    {markup: gradient, output: gradient_out, menu: gradient_menu}
+];
+
+const attr = (v) => code({class: "attr"}, text(`${v}`));
+const value = (v) => code({class: "value"}, text(`${v};`));
+const param = (k, v) => [attr(k), text(": "), value(v), br()];
+const get_attr = (k) => [text("var("), attr(k), text(")")];
+
+const render = ({colours, style, save, help, gradient_style}) =>
     body([
         header([
-            !save &&
+            !help && !save &&
             aside([
+                a({href:"/", class: "logo"}, [palettemark()]),
+                button({onclick:onhelp}, [helpmark()]),
                 button({onclick:onsave}, [savemark()]),
                 button({onclick:onswap}, [swapmark()]),
+                ...styles[style].menu({gradient_style})
             ]),
 
-            save &&
-            aside({class: "modal"}, [
+            help &&
+            aside({class: "modal help"}, [
                 p([
-                    button({onclick:onsave}, [xmark()])
+                    button({onclick:onhelp}, [xmark()]),
                 ]),
-                pre([
-                    ...colours
-                        .map(
-                            ({name, colour}) =>
-                                param(`--colour-${name}`, colour)
-                        )
-                        .flat()
+                h1([text("Colours")]),
+                p([text("Minimal colour palette generator with optional CSS output.")]),
+                ul([
+                    li([text("Generate CSS properties from a list of colours.")]),
+                    li([text("Generate CSS properties and a gradient.")]),
+                    li([text("Change the name of the properties as well as the colours.")]),
+                    li([text("Add or remove colours at will.")]),
                 ])
+            ]),
+
+            !help && save &&
+            aside({class: "modal"}, [
+                ...styles[style].output({colours, gradient_style, save})
             ]),
         ]),
 
-        styles[style](colours)
+        styles[style].markup({colours, gradient_style})
     ]);
 
 const group = (name, colour) => ({name, colour});
@@ -211,7 +292,7 @@ const colours = [
 ];
 
 const dispatch = await app({
-    init:{colours, style:0},
+    init:{colours, style:0, gradient_style: "linear", help: false},
     view: render,
     node
 });
