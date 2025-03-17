@@ -205,7 +205,7 @@ const gradient_out = ({colours, gradient_style, save}) => ([
     ]),
     pre([
         ...colours
-            .map(({name, colour}) => param(`--colour-${name}`, gradient_style, colour))
+            .map(({name, colour}) => param(`--colour-${name}`, colour))
             .flat(),
         br(),
         text(`${gradient_style}-gradient(`),
